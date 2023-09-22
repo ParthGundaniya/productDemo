@@ -16,12 +16,21 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::all();
+        try{
+            $products = Product::all();
 
-        if(sizeof($products) == 0)
-            return response()->json(["status" => false, "message" => "No products found."]);
+            if(sizeof($products) == 0)
+                return response()->json(["status" => false, "message" => "No products found."]);
 
-        return response()->json(["status" => true, "message" => "Products listed successfully.", "data" => $products]);
+            return response()->json(["status" => true, "message" => "Products listed successfully.", "data" => $products]);
+        }
+        catch(\Illuminate\Database\QueryException $e){
+            return response()->json(["status" => false, "message" => "Database Error: ".$e->getMessage()]);
+        }
+        catch(Exception $e)
+        {
+            return response()->json(["status" => false, "message" => "Server Error: ".$e->getMessage()]);
+        }
     }
 
     /**
@@ -32,17 +41,26 @@ class ProductController extends Controller
      */
     public function store(ProductRequest $request)
     {
-        $product = new Product();
+        try{
+            $product = new Product();
 
-        $product->name = $request->name;
-        $product->description = $request->description;
-        $product->sku = $request->sku;
-        $product->price = $request->price;
-        
-        if($product->save())
-            return response()->json(["status" => true, "message" => "Product saved successfully."]);
+            $product->name = $request->name;
+            $product->description = $request->description;
+            $product->sku = $request->sku;
+            $product->price = $request->price;
+            
+            if($product->save())
+                return response()->json(["status" => true, "message" => "Product saved successfully."]);
 
-        return response()->json(["status" => false, "message" => "Failed to save product."]);
+            return response()->json(["status" => false, "message" => "Failed to save product."]);
+        }
+        catch(\Illuminate\Database\QueryException $e){
+            return response()->json(["status" => false, "message" => "Database Error: ".$e->getMessage()]);
+        }
+        catch(Exception $e)
+        {
+            return response()->json(["status" => false, "message" => "Server Error: ".$e->getMessage()]);
+        }
     }
 
     /**
@@ -53,12 +71,21 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        $product = Product::find($id);
+        try{
+            $product = Product::find($id);
 
-        if(!$product)
-            return response()->json(["status" => false, "message" => "Product not found."]);
+            if(!$product)
+                return response()->json(["status" => false, "message" => "Product not found."]);
 
-        return response()->json(["status" => true, "message" => "Product details successful.", "data" => $product]);
+            return response()->json(["status" => true, "message" => "Product details successful.", "data" => $product]);
+        }
+        catch(\Illuminate\Database\QueryException $e){
+            return response()->json(["status" => false, "message" => "Database Error: ".$e->getMessage()]);
+        }
+        catch(Exception $e)
+        {
+            return response()->json(["status" => false, "message" => "Server Error: ".$e->getMessage()]);
+        }
     }
 
     /**
@@ -70,20 +97,29 @@ class ProductController extends Controller
      */
     public function update(ProductRequest $request, $id)
     {
-        $product = Product::find($id);
+        try{
+            $product = Product::find($id);
 
-        if(!$product)
-            return response()->json(["status" => false, "message" => "Invalid product."]);
+            if(!$product)
+                return response()->json(["status" => false, "message" => "Invalid product."]);
 
-        $product->name = $request->name;
-        $product->description = $request->description;
-        $product->sku = $request->sku;
-        $product->price = $request->price;
+            $product->name = $request->name;
+            $product->description = $request->description;
+            $product->sku = $request->sku;
+            $product->price = $request->price;
 
-        if($product->save())
-            return response()->json(["status" => true, "message" => "Product updated successfully."]);
+            if($product->save())
+                return response()->json(["status" => true, "message" => "Product updated successfully."]);
 
-        return response()->json(["status" => false, "message" => "Failed to update product."]);
+            return response()->json(["status" => false, "message" => "Failed to update product."]);
+        }
+        catch(\Illuminate\Database\QueryException $e){
+            return response()->json(["status" => false, "message" => "Database Error: ".$e->getMessage()]);
+        }
+        catch(Exception $e)
+        {
+            return response()->json(["status" => false, "message" => "Server Error: ".$e->getMessage()]);
+        }
     }
 
     /**
@@ -94,14 +130,23 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        $product = Product::find($id);
+        try{
+            $product = Product::find($id);
 
-        if(!$product)
-            return response()->json(["status" => false, "message" => "Invalid product."]);
+            if(!$product)
+                return response()->json(["status" => false, "message" => "Invalid product."]);
 
-        if($product->delete())
-            return response()->json(["status" => true, "message" => "Product deleted successfully."]);
+            if($product->delete())
+                return response()->json(["status" => true, "message" => "Product deleted successfully."]);
 
-        return response()->json(["status" => false, "message" => "Failed to delete product."]);
+            return response()->json(["status" => false, "message" => "Failed to delete product."]);
+        }
+        catch(\Illuminate\Database\QueryException $e){
+            return response()->json(["status" => false, "message" => "Database Error: ".$e->getMessage()]);
+        }
+        catch(Exception $e)
+        {
+            return response()->json(["status" => false, "message" => "Server Error: ".$e->getMessage()]);
+        }
     }
 }
